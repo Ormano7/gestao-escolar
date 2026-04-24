@@ -182,15 +182,27 @@
   .user-name { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.9); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .user-role { font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 1px; }
 
-  /* ── MAIN ── */
-  .main {
-    margin-left: var(--sidebar-w);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
+  /* 1º: Defina o estilo padrão (Desktop) */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease; /* Adicione isso para um efeito suave ao abrir/fechar */
+}
 
+/* 2º: Defina as exceções (Mobile) por último */
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0; 
+    width: 100%;               
+  }
+  
+  .main-content {
+    padding-top: 60px; 
+  }
+}
   /* ── TOPBAR ── */
   .topbar {
     background: var(--surface);
@@ -1171,6 +1183,155 @@
     to { transform: translateX(0); opacity: 1; }
   }
 
+
+  /* ── HISTÓRICO ACADÊMICO ── */
+  .student-profile { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .student-summary { display: flex; align-items: center; gap: 16px; }
+  .student-avatar-lg { width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, var(--navy), var(--accent)); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; flex-shrink: 0; }
+  .student-meta h2 { font-size: 20px; margin-bottom: 4px; }
+  .student-meta p { color: var(--text-muted); font-size: 13px; margin-top: 2px; }
+  .academic-actions { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .grades-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .grade-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); }
+  .grade-card .subject { font-weight: 700; margin-bottom: 10px; }
+  .grade-line { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 12.5px; color: var(--text-secondary); border-bottom: 1px dashed var(--border); }
+  .grade-line:last-child { border-bottom: 0; }
+  .grade-line strong { color: var(--text-primary); }
+  .general-average { font-size: 42px; font-weight: 800; color: var(--success); line-height: 1; }
+  .print-area-note { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+  .mobile-backdrop { display: none; position: fixed; inset: 0; background: rgba(13,43,85,0.35); z-index: 998; }
+  .mobile-backdrop.active { display: block; }
+
+
+  .certificate-panel { display: none; margin-top: 18px; }
+  .certificate-panel.active { display: block; }
+  .certificate-document {
+    background: #fffdf7;
+    border: 8px double var(--gold);
+    border-radius: 16px;
+    padding: 34px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .certificate-document::before {
+    content: 'SGEM';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 120px;
+    color: rgba(232,160,32,0.08);
+    pointer-events: none;
+  }
+  .certificate-content { position: relative; z-index: 1; }
+  .certificate-title { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--navy); margin-bottom: 8px; }
+  .certificate-subtitle { color: var(--text-secondary); font-size: 13px; text-transform: uppercase; letter-spacing: .12em; margin-bottom: 28px; }
+  .certificate-name { font-family: 'DM Serif Display', serif; font-size: 32px; color: var(--text-primary); margin: 18px 0 8px; }
+  .certificate-text { max-width: 760px; margin: 0 auto; color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+  .certificate-meta { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 26px 0; }
+  .certificate-meta div { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: rgba(255,255,255,.75); }
+  .certificate-meta span { display:block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing:.06em; }
+  .certificate-meta strong { display:block; margin-top: 3px; font-size: 14px; color: var(--text-primary); }
+  .certificate-signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 34px; }
+  .signature-line { border-top: 1px solid var(--text-secondary); padding-top: 8px; color: var(--text-secondary); font-size: 12px; }
+  .certificate-id { margin-top: 20px; font-size: 11px; color: var(--text-muted); }
+
+  @media print {
+    .sidebar, .topbar, .mobile-menu-btn, .academic-actions, .filter-bar, .mobile-backdrop { display: none !important; }
+    body { background: white; display: block; }
+    .main { margin-left: 0 !important; }
+    .content { padding: 0; }
+    .section { display: none !important; }
+    #section-historico { display: block !important; }
+    .card, .metric-card, .grade-card, .certificate-document { break-inside: avoid; box-shadow: none; }
+  }
+
+  @media (max-width: 1100px) {
+    .grades-grid { grid-template-columns: repeat(2, 1fr); }
+    .student-profile { grid-template-columns: 1fr; }
+    .academic-actions { justify-content: flex-start; }
+  }
+
+  @media (max-width: 768px) {
+    body { display: block; }
+    .topbar { padding-left: 68px; padding-right: 14px; }
+    .topbar-actions { display: none; }
+    .content { padding: 22px 14px; }
+    .section-header { align-items: flex-start; flex-direction: column; }
+    .metrics-grid, .quick-actions, .two-col, .three-col, .reports-grid, .schools-grid, .transfer-form, .form-row, .form-row.triple, .grades-grid { grid-template-columns: 1fr !important; }
+    .student-summary { align-items: flex-start; }
+    .academic-actions .btn { width: 100%; justify-content: center; }
+    .filter-bar .search-bar { width: 100% !important; }
+    .card-header { flex-direction: column; align-items: flex-start; }
+    .diario-grid { min-width: 720px; }
+    .certificate-document { padding: 22px 14px; border-width: 5px; }
+    .certificate-title { font-size: 28px; }
+    .certificate-name { font-size: 25px; }
+    .certificate-meta, .certificate-signatures { grid-template-columns: 1fr; }
+  }
+
+  /* Estilo padrão para o botão (escondido no desktop) */
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
+    background: #00441b; /* Verde da prefeitura */
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Configurações para telas Mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Esconde totalmente à esquerda */
+    width: 280px;
+    height: 100vh;
+    z-index: 9999; /* Garante que fique acima de tudo */
+    transition: left 0.3s ease;
+  }
+
+  /* Quando o JS adicionar a classe 'active', ela desliza para dentro */
+  .sidebar.active {
+    left: 0;
+  }
+}
+@media (max-width: 768px) {
+  .main {
+    margin-left: 0 !important;
+    width: 100%;
+    position: relative;
+  }
+}
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block; /* Mostra o botão no mobile */
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -280px; /* Esconde a sidebar para fora da tela */
+        transition: all 0.3s ease;
+        z-index: 999;
+        height: 100vh;
+        width: 280px;
+    }
+
+    /* Classe que o JavaScript vai adicionar para abrir o menu */
+    .sidebar.active {
+        left: 0;
+    }
+}
+
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -1181,6 +1342,12 @@
 <body>
 
 <!-- SIDEBAR -->
+<button id="menu-toggle" class="mobile-menu-btn">
+  <svg viewBox="0 0 24 24" width="24" height="24">
+    <path fill="currentColor" d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+  </svg>
+</button>
+
 <aside class="sidebar">
   <div class="sidebar-brand">
     <div class="brand-badge">
@@ -1188,7 +1355,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
       </div>
       <div class="brand-text">
-        <img src="gestao-escolarRG/assets/logoRGsem.png" alt="SGEM Logo" class="brand-logo">
+        <img src="assets/logoRGsem.png" alt="SGEM Logo" class="brand-logo">
       </div>
     </div>
   </div>
@@ -1288,7 +1455,7 @@
       <div class="section-header">
         <div class="section-title">
           <h1>Painel de Controle</h1>
-          <p>Ano Letivo 2026 · Atualizado em 21 de abril, 2026 às 08:42</p>
+          <p>Ano Letivo 2026· Atualizado em 21 de abril, 2026 às 08:42</p>
         </div>
         <div class="btn-group">
           <button class="btn btn-outline" onclick="showToast('Relatório gerado com sucesso!', 'success')">
@@ -1394,8 +1561,8 @@
               <div class="card-subtitle">Semana de 14–18 Abr · Rede Municipal</div>
             </div>
             <select class="filter-select" style="font-size:12px; padding:5px 10px;">
-              <option>Abril 2025</option>
-              <option>Março 2025</option>
+              <option>Abril 2026</option>
+              <option>Março 2026</option>
             </select>
           </div>
           <div class="card-body">
@@ -1802,7 +1969,7 @@
             <tbody>
               <tr>
                 <td style="padding-left:20px"><div class="with-icon"><div class="teacher-avatar ta-blue" style="font-size:11px">LS</div> Lucas M. Santos</div></td>
-                <td class="td-muted">2025.0481</td>
+                <td class="td-muted">2026.0481</td>
                 <td>5º Ano B</td>
                 <td class="td-muted">E.M. Cel. Tibúrcio</td>
                 <td>
@@ -1813,7 +1980,7 @@
                 </td>
                 <td><strong>8.4</strong></td>
                 <td><span class="badge badge-green">Ativo</span></td>
-                <td><button class="btn btn-outline btn-sm" onclick="showToast('Histórico de Lucas Santos aberto','')">Histórico</button></td>
+                <td><button class="btn btn-outline btn-sm" onclick="loadAcademicHistory('lucas'); navigate('historico', document.querySelector('[onclick*=historico]'))">Histórico</button></td>
               </tr>
               <tr>
                 <td style="padding-left:20px"><div class="with-icon"><div class="teacher-avatar ta-purple" style="font-size:11px">AP</div> Ana P. Oliveira</div></td>
@@ -1828,7 +1995,7 @@
                 </td>
                 <td><strong>7.1</strong></td>
                 <td><span class="badge badge-blue">Transferida</span></td>
-                <td><button class="btn btn-outline btn-sm">Histórico</button></td>
+                <td><button class="btn btn-outline btn-sm" onclick="loadAcademicHistory('ana'); navigate('historico', document.querySelector('[onclick*=historico]'))">Histórico</button></td>
               </tr>
               <tr>
                 <td style="padding-left:20px"><div class="with-icon"><div class="teacher-avatar ta-green" style="font-size:11px">RF</div> Rafael F. Costa</div></td>
@@ -1843,7 +2010,7 @@
                 </td>
                 <td><strong>5.8</strong></td>
                 <td><span class="badge badge-red">Risco</span></td>
-                <td><button class="btn btn-outline btn-sm">Histórico</button></td>
+                <td><button class="btn btn-outline btn-sm" onclick="loadAcademicHistory('rafael'); navigate('historico', document.querySelector('[onclick*=historico]'))">Histórico</button></td>
               </tr>
               <tr>
                 <td style="padding-left:20px"><div class="with-icon"><div class="teacher-avatar ta-gold" style="font-size:11px">JM</div> Julia M. Ferreira</div></td>
@@ -1858,10 +2025,45 @@
                 </td>
                 <td><strong>9.6</strong></td>
                 <td><span class="badge badge-green">Ativo</span></td>
-                <td><button class="btn btn-outline btn-sm">Histórico</button></td>
+                <td><div class="btn-group"><button class="btn btn-outline btn-sm" onclick="loadAcademicHistory('julia'); navigate('historico', document.querySelector('[onclick*=historico]'))">Histórico</button><button class="btn btn-success btn-sm" onclick="loadAcademicHistory('julia'); navigate('historico', document.querySelector('[onclick*=historico]')); setTimeout(generateCertificate, 50)">Certificado</button></div></td>
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ═══════════ HISTÓRICO ACADÊMICO ═══════════ -->
+    <section class="section" id="section-historico">
+      <div class="section-header">
+        <div class="section-title"><h1>Histórico Acadêmico</h1><p>Protótipo de boletim com notas, frequência, média geral e emissão de certificado para alunos do 9º ano.</p></div>
+        <div class="btn-group academic-actions"><button class="btn btn-outline" onclick="window.print()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM16 19H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zM18 3H6v4h12V3z"/></svg> Imprimir Boletim</button><button class="btn btn-success" id="btn-certificado" onclick="generateCertificate()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v4l4-2 4 2v-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 13l-3.5 2 1-4-3-2.7 4-.3L12 6.2l1.5 3.8 4 .3-3 2.7 1 4-3.5-2z"/></svg> Gerar Certificado Acadêmico</button></div>
+      </div>
+      <div class="filter-bar"><select class="filter-select" id="student-selector" onchange="loadAcademicHistory(this.value)"><option value="lucas">Lucas M. Santos — 5º Ano B</option><option value="ana">Ana P. Oliveira — 7º Ano A</option><option value="mariana" selected>Mariana C. Lima — 9º Ano A</option><option value="julia">Julia M. Ferreira — 9º Ano A</option></select><select class="filter-select"><option>Ano Letivo 2026</option><option>Ano Letivo 2025</option></select></div>
+      <div class="student-profile"><div class="card"><div class="card-body student-summary"><div class="student-avatar-lg" id="hist-avatar">ML</div><div class="student-meta"><h2 id="hist-name">Mariana C. Lima</h2><p id="hist-info">Matrícula 2022.0087 · 9º Ano A · E.M. Rui Barbosa</p><p><span class="badge badge-green" id="hist-status">Concluinte do Ensino Fundamental</span></p></div></div></div><div class="card"><div class="card-body" style="display:flex;align-items:center;justify-content:space-between;gap:16px;"><div><div class="card-title">Média Geral</div><div class="card-subtitle">Calculada pela média das disciplinas</div><div class="print-area-note" id="cert-note">Aluno do 9º ano: certificado disponível.</div></div><div class="general-average" id="hist-average">8.7</div></div></div></div>
+      <div class="metrics-grid"><div class="metric-card green"><div class="metric-value" id="hist-frequency">94%</div><div class="metric-label">Frequência Geral</div></div><div class="metric-card blue"><div class="metric-value" id="hist-approved">8</div><div class="metric-label">Disciplinas Aprovadas</div></div><div class="metric-card gold"><div class="metric-value" id="hist-absences">12</div><div class="metric-label">Faltas no Ano</div></div><div class="metric-card purple"><div class="metric-value" id="hist-year">9º</div><div class="metric-label">Ano/Série Atual</div></div></div>
+      <div class="card"><div class="card-header"><div><div class="card-title">Notas e Frequência por Disciplina</div><div class="card-subtitle">1º ao 4º bimestre, média final e situação acadêmica</div></div></div><div class="card-body"><div class="grades-grid" id="grades-grid"></div></div></div>
+      <div class="certificate-panel" id="certificate-panel">
+        <div class="certificate-document" id="certificate-document">
+          <div class="certificate-content">
+            <div class="certificate-subtitle">Sistema de Gestão Educacional Municipal</div>
+            <div class="certificate-title">Certificado Acadêmico</div>
+            <p class="certificate-text">Certificamos que</p>
+            <div class="certificate-name" id="cert-student-name">Mariana C. Lima</div>
+            <p class="certificate-text">concluiu o <strong>Ensino Fundamental</strong> no ano letivo de 2026, atendendo aos critérios acadêmicos de aproveitamento e frequência registrados pela unidade escolar.</p>
+            <div class="certificate-meta">
+              <div><span>Matrícula</span><strong id="cert-enrollment">2022.0087</strong></div>
+              <div><span>Turma</span><strong id="cert-class">9º Ano A</strong></div>
+              <div><span>Média Geral</span><strong id="cert-average">8.7</strong></div>
+            </div>
+            <p class="certificate-text"><strong id="cert-school">E.M. Rui Barbosa</strong> · Emitido em <strong id="cert-date">24/04/2026</strong></p>
+            <div class="certificate-signatures">
+              <div class="signature-line">Direção da Unidade Escolar</div>
+              <div class="signature-line">Secretaria Municipal de Educação</div>
+            </div>
+            <div class="certificate-id" id="cert-code">Código de registro: CERT-2026-0087</div>
+          </div>
         </div>
       </div>
     </section>
@@ -1901,7 +2103,7 @@
         <div class="card-header">
           <div>
             <div class="card-title">5º Ano B — Matemática</div>
-            <div class="card-subtitle">Prof. Carlos Alves · Semana: 14–18 Abr 2025 · Bimestre 2</div>
+            <div class="card-subtitle">Prof. Carlos Alves · Semana: 14–18 Abr 2026 · Bimestre 2</div>
           </div>
           <div style="display:flex;gap:16px;align-items:center;font-size:12.5px">
             <span style="color:var(--success);font-weight:600">↑ Frequência média: 91%</span>
@@ -2007,7 +2209,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label">Data da Transferência</label>
-                <input class="form-input" type="date" value="2025-04-21">
+                <input class="form-input" type="date" value="2026-04-21">
               </div>
               <div class="form-group full">
                 <label class="form-label">Motivo (opcional)</label>
@@ -2033,19 +2235,19 @@
                 <tr>
                   <td style="padding-left:16px">Ana P. Oliveira</td>
                   <td class="td-muted" style="font-size:12px">Tiradentes → Santos Dumont</td>
-                  <td class="td-muted">18/04/2025</td>
+                  <td class="td-muted">18/04/2026</td>
                   <td><span class="badge badge-green">Concluída</span></td>
                 </tr>
                 <tr>
                   <td style="padding-left:16px">Bruno L. Neto</td>
                   <td class="td-muted" style="font-size:12px">Rui Barbosa → José Alencar</td>
-                  <td class="td-muted">10/04/2025</td>
+                  <td class="td-muted">10/04/2026</td>
                   <td><span class="badge badge-green">Concluída</span></td>
                 </tr>
                 <tr>
                   <td style="padding-left:16px">Camila S. Rocha</td>
                   <td class="td-muted" style="font-size:12px">Cel. Tibúrcio → Rui Barbosa</td>
-                  <td class="td-muted">02/04/2025</td>
+                  <td class="td-muted">02/04/2026</td>
                   <td><span class="badge badge-green">Concluída</span></td>
                 </tr>
               </tbody>
@@ -2163,7 +2365,7 @@
             <thead><tr><th style="padding-left:16px">Relatório</th><th>Solicitante</th><th>Iniciado</th><th>Progresso</th><th>Status</th></tr></thead>
             <tbody>
               <tr>
-                <td style="padding-left:16px">Censo Escolar Municipal 2025</td>
+                <td style="padding-left:16px">Censo Escolar Municipal 2026</td>
                 <td class="td-muted">Maria Souza</td>
                 <td class="td-muted">08:30</td>
                 <td>
@@ -2311,7 +2513,7 @@
 <div class="modal-overlay" id="modal-matricula" onclick="closeModalOutside(event, 'modal-matricula')">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">Nova Matrícula — 2025</div>
+      <div class="modal-title">Nova Matrícula — 2026</div>
       <button class="modal-close" onclick="closeModal('modal-matricula')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
       </button>
@@ -2374,7 +2576,7 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-matricula')">Cancelar</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-matricula'); showToast('Matrícula realizada com sucesso! Nº 2025.0482','success')">
+      <button class="btn btn-primary" onclick="closeModal('modal-matricula'); showToast('Matrícula realizada com sucesso! Nº 2026.0482','success')">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
         Confirmar Matrícula
       </button>
@@ -2386,6 +2588,84 @@
 <div class="toast-container" id="toast-container"></div>
 
 <script>
+
+  let currentAcademicStudentKey = 'mariana';
+
+  const academicStudents = {
+    lucas: { initials: 'LS', name: 'Lucas M. Santos', info: 'Matrícula 2026.0481 · 5º Ano B · E.M. Cel. Tibúrcio', year: '5º', frequency: '92%', absences: 16, average: '8.4', status: 'Aluno ativo', certificate: false, grades: [['Português',8.0,8.5,8.6,8.4,8.4,'92%'],['Matemática',7.8,8.2,8.0,8.5,8.1,'90%'],['Ciências',8.7,8.8,8.5,9.0,8.8,'95%'],['História',8.0,8.3,8.6,8.2,8.3,'93%'],['Geografia',8.1,8.4,8.2,8.7,8.4,'91%'],['Inglês',8.5,8.0,8.8,8.6,8.5,'94%'],['Artes',9.0,8.8,9.2,9.0,9.0,'96%'],['Educação Física',9.4,9.2,9.5,9.4,9.4,'98%']] },
+    ana: { initials: 'AP', name: 'Ana P. Oliveira', info: 'Matrícula 2024.0219 · 7º Ano A · E.M. Santos Dumont', year: '7º', frequency: '78%', absences: 42, average: '7.1', status: 'Atenção: frequência baixa', certificate: false, grades: [['Português',7.0,7.2,7.5,7.4,7.3,'80%'],['Matemática',6.8,7.0,7.1,7.3,7.1,'76%'],['Ciências',7.5,7.0,7.2,7.6,7.3,'79%'],['História',7.2,7.1,7.4,7.0,7.2,'78%'],['Geografia',6.9,7.3,7.1,7.5,7.2,'77%'],['Inglês',6.5,6.8,7.0,7.2,6.9,'75%'],['Artes',8.0,8.1,7.9,8.2,8.1,'84%'],['Educação Física',8.2,8.0,8.4,8.3,8.2,'86%']] },
+    mariana: { initials: 'ML', name: 'Mariana C. Lima', info: 'Matrícula 2022.0087 · 9º Ano A · E.M. Rui Barbosa', enrollment: '2022.0087', className: '9º Ano A', school: 'E.M. Rui Barbosa', year: '9º', frequency: '94%', absences: 12, average: '8.7', status: 'Concluinte do Ensino Fundamental', certificate: true, certificateCode: 'CERT-2026-0087', grades: [['Português',8.7,8.9,8.5,9.0,8.8,'95%'],['Matemática',8.2,8.5,8.8,8.4,8.5,'92%'],['Ciências',8.6,8.9,9.1,8.8,8.9,'96%'],['História',8.4,8.7,8.8,8.6,8.6,'93%'],['Geografia',8.5,8.8,8.9,8.7,8.7,'94%'],['Inglês',8.3,8.6,8.9,8.8,8.7,'93%'],['Artes',9.2,9.0,9.3,9.1,9.2,'97%'],['Educação Física',9.5,9.3,9.6,9.4,9.5,'98%']] },
+    rafael: { initials: 'RF', name: 'Rafael F. Costa', info: 'Matrícula 2024.0388 · 3º Ano C · E.M. Rui Barbosa', enrollment: '2024.0388', className: '3º Ano C', school: 'E.M. Rui Barbosa', year: '3º', frequency: '64%', absences: 58, average: '5.8', status: 'Risco acadêmico', certificate: false, grades: [['Português',5.5,5.8,6.0,5.9,5.8,'65%'],['Matemática',5.0,5.4,5.7,5.8,5.5,'62%'],['Ciências',6.0,6.2,5.9,6.1,6.1,'66%'],['História',5.8,5.7,6.0,5.6,5.8,'64%'],['Geografia',5.7,5.6,5.8,6.0,5.8,'63%'],['Inglês',5.2,5.5,5.6,5.4,5.4,'60%'],['Artes',6.4,6.5,6.2,6.6,6.4,'70%'],['Educação Física',6.8,6.7,6.9,7.0,6.9,'72%']] },
+    julia: { initials: 'JM', name: 'Julia M. Ferreira', info: 'Matrícula 2023.1102 · 9º Ano A · E.M. Tiradentes', enrollment: '2023.1102', className: '9º Ano A', school: 'E.M. Tiradentes', year: '9º', frequency: '97%', absences: 6, average: '9.6', status: 'Concluinte do Ensino Fundamental', certificate: true, certificateCode: 'CERT-2026-1102', grades: [['Português',9.5,9.6,9.7,9.8,9.7,'98%'],['Matemática',9.4,9.7,9.6,9.8,9.6,'97%'],['Ciências',9.8,9.6,9.7,9.9,9.8,'98%'],['História',9.5,9.4,9.7,9.6,9.6,'96%'],['Geografia',9.6,9.7,9.5,9.8,9.7,'97%'],['Inglês',9.4,9.5,9.7,9.6,9.6,'96%'],['Artes',9.8,9.9,9.7,10.0,9.9,'99%'],['Educação Física',9.7,9.8,9.9,9.8,9.8,'99%']] }
+  };
+
+  function loadAcademicHistory(key) {
+    const student = academicStudents[key] || academicStudents.mariana;
+    currentAcademicStudentKey = key;
+    document.getElementById('student-selector').value = key;
+    document.getElementById('hist-avatar').textContent = student.initials;
+    document.getElementById('hist-name').textContent = student.name;
+    document.getElementById('hist-info').textContent = student.info;
+    document.getElementById('hist-status').textContent = student.status;
+    document.getElementById('hist-average').textContent = student.average;
+    document.getElementById('hist-frequency').textContent = student.frequency;
+    document.getElementById('hist-absences').textContent = student.absences;
+    document.getElementById('hist-year').textContent = student.year;
+    document.getElementById('hist-approved').textContent = student.grades.length;
+
+    const certBtn = document.getElementById('btn-certificado');
+    const certNote = document.getElementById('cert-note');
+    certBtn.style.display = student.certificate ? 'inline-flex' : 'none';
+    certNote.textContent = student.certificate ? 'Aluno do 9º ano: certificado virtual vinculado ao registro.' : 'Certificado disponível apenas para alunos do 9º ano.';
+    updateCertificate(student);
+    document.getElementById('certificate-panel').classList.toggle('active', !!student.certificate);
+
+    document.getElementById('grades-grid').innerHTML = student.grades.map(g => `
+      <div class="grade-card"><div class="subject">${g[0]}</div>
+        <div class="grade-line"><span>1º Bim.</span><strong>${g[1].toFixed(1)}</strong></div>
+        <div class="grade-line"><span>2º Bim.</span><strong>${g[2].toFixed(1)}</strong></div>
+        <div class="grade-line"><span>3º Bim.</span><strong>${g[3].toFixed(1)}</strong></div>
+        <div class="grade-line"><span>4º Bim.</span><strong>${g[4].toFixed(1)}</strong></div>
+        <div class="grade-line"><span>Média</span><strong>${g[5].toFixed(1)}</strong></div>
+        <div class="grade-line"><span>Frequência</span><strong>${g[6]}</strong></div>
+        <div style="margin-top:10px"><span class="badge ${g[5] >= 7 ? 'badge-green' : 'badge-red'}">${g[5] >= 7 ? 'Aprovado' : 'Recuperação'}</span></div>
+      </div>`).join('');
+  }
+
+
+
+  function extractStudentInfo(student) {
+    const parts = student.info.split(' · ');
+    return {
+      enrollment: student.enrollment || parts[0].replace('Matrícula ', ''),
+      className: student.className || parts[1] || student.year,
+      school: student.school || parts[2] || 'Unidade Escolar Municipal'
+    };
+  }
+
+  function updateCertificate(student) {
+    const info = extractStudentInfo(student);
+    document.getElementById('cert-student-name').textContent = student.name;
+    document.getElementById('cert-enrollment').textContent = info.enrollment;
+    document.getElementById('cert-class').textContent = info.className;
+    document.getElementById('cert-average').textContent = student.average;
+    document.getElementById('cert-school').textContent = info.school;
+    document.getElementById('cert-code').textContent = 'Código de registro: ' + (student.certificateCode || ('CERT-2026-' + info.enrollment.replace(/\D/g, '').slice(-4)));
+    document.getElementById('cert-date').textContent = new Date().toLocaleDateString('pt-BR');
+  }
+
+  function generateCertificate() {
+    const student = academicStudents[currentAcademicStudentKey] || academicStudents.mariana;
+    if (!student.certificate) {
+      showToast('Certificado acadêmico disponível apenas para alunos do 9º ano.', '');
+      return;
+    }
+    updateCertificate(student);
+    document.getElementById('certificate-panel').classList.add('active');
+    document.getElementById('certificate-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast('Certificado virtual vinculado ao registro do aluno do 9º ano.', 'success');
+  }
+
   // ── NAVIGATION ──
   function navigate(id, el) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -2400,7 +2680,8 @@
       diario: 'Diário Digital',
       transferencias: 'Transferências',
       relatorios: 'Relatórios',
-      configuracoes: 'Configurações'
+      configuracoes: 'Configurações',
+      historico: 'Histórico Acadêmico'
     };
     document.getElementById('breadcrumb-current').textContent = labels[id] || id;
   }
@@ -2434,29 +2715,45 @@
     setTimeout(() => t.remove(), 3000);
   }
 
-  // ── DIÁRIO FREQ TOGGLE ──
-  function toggleFreq(el) {
-    if (el.classList.contains('freq-p')) {
-      el.classList.remove('freq-p');
-      el.classList.add('freq-f');
-      el.textContent = 'F';
-    } else {
-      el.classList.remove('freq-f');
-      el.classList.add('freq-p');
-      el.textContent = 'P';
+    // ── DIÁRIO FREQ TOGGLE ──
+    function toggleFreq(el) {
+        if (el.classList.contains('freq-p')) {
+        el.classList.remove('freq-p');
+        el.classList.add('freq-f');
+        el.textContent = 'F';
+        } else {
+        el.classList.remove('freq-f');
+        el.classList.add('freq-p');
+        el.textContent = 'P';
+        }
+        showToast('Frequência atualizada (salvo automaticamente)', 'success');
     }
-    showToast('Frequência atualizada (salvo automaticamente)', 'success');
-  }
 
-  // ── ESC CLOSE ──
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.open').forEach(m => {
-        m.classList.remove('open');
-        document.body.style.overflow = '';
-      });
-    }
-  });
+    // ── ESC CLOSE ──
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => {
+            m.classList.remove('open');
+            document.body.style.overflow = '';
+        });
+        }
+    });
+
+    const menuBtn = document.getElementById('menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    menuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
+
+    // Opcional: Fecha o menu se o usuário clicar fora dele
+    document.addEventListener('click', (e) => {
+        if (!sidebar.contains(e.target) && !menuBtn.contains(e.target) && sidebar.classList.contains('active')) {
+            sidebar.classList.remove('active');
+        }
+});
+
+    loadAcademicHistory('mariana');
 </script>
 </body>
 </html>
